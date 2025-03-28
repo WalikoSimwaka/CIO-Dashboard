@@ -12,15 +12,17 @@ const HomePage = () => {
 			className={`h-full w-full p-2 md:p-4 ${
 				darkMode ? "bg-[#03021E] text-white" : "bg-[#EFEFF3] text-black"
 			}`}>
-			<div className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-4 h-full">
-				<div className="lg:col-span-1 lg:row-span-2 h-full min-h-0">
+			<div className="grid grid-cols-1 lg:grid-cols-2 gap-2 md:gap-4 h-full">
+				{/* Two smaller sections at the top */}
+				<div className="lg:col-span-1 h-full min-h-0">
 					<PriorityTasks />
 				</div>
 
-				<div className="lg:col-span-2 h-full min-h-0">
+				<div className="lg:col-span-1 h-full min-h-0">
 					<WarRoom />
 				</div>
 
+				{/* Big horizontal section at the bottom */}
 				<div className="lg:col-span-2 h-full min-h-0">
 					<HighPriorityProjects />
 				</div>

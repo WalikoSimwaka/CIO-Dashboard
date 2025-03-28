@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useTheme } from "../../contexts/ThemeContext";
-import { FaPlus, FaEllipsisV, FaUserCircle } from "react-icons/fa";
+import { FaPlus, FaEllipsisV, FaUserCircle, FaTimes } from "react-icons/fa";
 
 const WarRoom = () => {
 	const { darkMode } = useTheme();
-	const [tasks] = useState([
+	const [tasks, setTasks] = useState([
 		{
 			id: 1,
 			title: "Production Server Outage - Database Failure",
@@ -15,32 +15,21 @@ const WarRoom = () => {
 			priority: "Critical",
 			assignees: ["Alice Banda"],
 		},
-		// {
-		// 	id: 2,
-		// 	title: "Security Breach - Unauthorized Access Detected",
-		// 	description:
-		// 		"Intrusion detection system triggered. Investigate potential data breach and secure systems immediately.",
-		// 	status: "Implementation",
-		// 	dueDate: "27 March, 2025 15:06",
-		// 	priority: "Critical",
-		// 	assignees: ["Eve Falama"],
-		// },
-		// {
-		// 	id: 3,
-		// 	title: "Network Connectivity Loss - Main Office",
-		// 	description:
-		// 		"Complete network outage affecting all users in the main office. Diagnose and restore connectivity ASAP.",
-		// 	status: "In Research",
-		// 	dueDate: "27 March, 2025 12:04",
-		// 	priority: "Moderate",
-		// 	assignees: ["Grace Howe"],
-		// },
 	]);
+
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [newIncident, setNewIncident] = useState({
+		title: "",
+		description: "",
+		priority: "Critical",
+		assignees: "",
+		dueDate: "",
+	});
 
 	const getPriorityColor = (priority) => {
 		switch (priority) {
 			case "Critical":
-				return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
+				return "bg-red-500 bg-opacity-10 text-red-700 dark:bg-red-500 dark:bg-opacity-30 border border-red-700";
 			case "Moderate":
 				return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
 			case "Low":
@@ -48,6 +37,35 @@ const WarRoom = () => {
 			default:
 				return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
 		}
+	};
+
+	const handleInputChange = (e) => {
+		const { name, value } = e.target;
+		setNewIncident((prev) => ({ ...prev, [name]: value }));
+	};
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		const newTask = {
+			id: tasks.length + 1,
+			title: newIncident.title,
+			description: newIncident.description,
+			status: "New",
+			dueDate: newIncident.dueDate || "Not specified",
+			priority: newIncident.priority,
+			assignees: newIncident.assignees
+				? [newIncident.assignees]
+				: ["Unassigned"],
+		};
+		setTasks([...tasks, newTask]);
+		setNewIncident({
+			title: "",
+			description: "",
+			priority: "Critical",
+			assignees: "",
+			dueDate: "",
+		});
+		setIsModalOpen(false);
 	};
 
 	return (
@@ -60,6 +78,7 @@ const WarRoom = () => {
 			<div className="flex justify-between items-center mb-2 md:mb-4">
 				<h2 className="text-lg md:text-lg font-semibold">War Room</h2>
 				<button
+					onClick={() => setIsModalOpen(true)}
 					className={`p-1 md:p-2 rounded-full ${
 						darkMode
 							? "bg-gray-700 hover:bg-gray-600"
@@ -69,6 +88,7 @@ const WarRoom = () => {
 				</button>
 			</div>
 
+			{/* Incident List */}
 			<div className="space-y-2 md:space-y-4 overflow-y-auto flex-1">
 				{tasks.map((task) => (
 					<div
@@ -120,6 +140,158 @@ const WarRoom = () => {
 					</div>
 				))}
 			</div>
+
+			{/* Add Incident Modal */}
+			{isModalOpen && (
+				<div
+					className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${
+						darkMode ? "bg-black/70" : "bg-gray-500/70"
+					}`}>
+					<div
+						className={`relative w-full max-w-md rounded-lg shadow-xl p-6 ${
+							darkMode
+								? "bg-[#020217] border border-gray-800"
+								: "bg-white border border-gray-300"
+						}`}>
+						<button
+							onClick={() => setIsModalOpen(false)}
+							className={`absolute top-4 right-4 p-1 rounded-full ${
+								darkMode ? "hover:bg-gray-800" : "hover:bg-gray-100"
+							}`}>
+							<FaTimes className="text-gray-500" />
+						</button>
+
+						<h3 className="text-lg font-semibold mb-4">Log New Incident</h3>
+
+						<form onSubmit={handleSubmit} className="space-y-4">
+							<div>
+								<label
+									className={`block text-sm mb-1 ${
+										darkMode ? "text-gray-300" : "text-gray-700"
+									}`}>
+									Incident Title*
+								</label>
+								<input
+									type="text"
+									name="title"
+									value={newIncident.title}
+									onChange={handleInputChange}
+									required
+									className={`w-full px-3 py-2 rounded border ${
+										darkMode
+											? "bg-[#03021E] border-gray-700 focus:border-blue-500"
+											: "bg-white border-gray-300 focus:border-blue-500"
+									} focus:outline-none focus:ring-1 focus:ring-blue-500`}
+								/>
+							</div>
+
+							<div>
+								<label
+									className={`block text-sm mb-1 ${
+										darkMode ? "text-gray-300" : "text-gray-700"
+									}`}>
+									Description*
+								</label>
+								<textarea
+									name="description"
+									value={newIncident.description}
+									onChange={handleInputChange}
+									required
+									rows={3}
+									className={`w-full px-3 py-2 rounded border ${
+										darkMode
+											? "bg-[#03021E] border-gray-700 focus:border-blue-500"
+											: "bg-white border-gray-300 focus:border-blue-500"
+									} focus:outline-none focus:ring-1 focus:ring-blue-500`}
+								/>
+							</div>
+
+							<div className="grid grid-cols-2 gap-4">
+								<div>
+									<label
+										className={`block text-sm mb-1 ${
+											darkMode ? "text-gray-300" : "text-gray-700"
+										}`}>
+										Priority*
+									</label>
+									<select
+										name="priority"
+										value={newIncident.priority}
+										onChange={handleInputChange}
+										className={`w-full px-3 py-2 rounded border ${
+											darkMode
+												? "bg-[#03021E] border-gray-700 focus:border-blue-500"
+												: "bg-white border-gray-300 focus:border-blue-500"
+										} focus:outline-none focus:ring-1 focus:ring-blue-500`}>
+										<option value="Critical">Critical</option>
+										<option value="Moderate">Moderate</option>
+										<option value="Low">Low</option>
+									</select>
+								</div>
+
+								<div>
+									<label
+										className={`block text-sm mb-1 ${
+											darkMode ? "text-gray-300" : "text-gray-700"
+										}`}>
+										Due Date
+									</label>
+									<input
+										type="datetime-local"
+										name="dueDate"
+										value={newIncident.dueDate}
+										onChange={handleInputChange}
+										className={`w-full px-3 py-2 rounded border ${
+											darkMode
+												? "bg-[#03021E] border-gray-700 focus:border-blue-500"
+												: "bg-white border-gray-300 focus:border-blue-500"
+										} focus:outline-none focus:ring-1 focus:ring-blue-500`}
+									/>
+								</div>
+							</div>
+
+							<div>
+								<label
+									className={`block text-sm mb-1 ${
+										darkMode ? "text-gray-300" : "text-gray-700"
+									}`}>
+									Assigned To
+								</label>
+								<input
+									type="text"
+									name="assignees"
+									value={newIncident.assignees}
+									onChange={handleInputChange}
+									placeholder="Enter assignee name"
+									className={`w-full px-3 py-2 rounded border ${
+										darkMode
+											? "bg-[#03021E] border-gray-700 focus:border-blue-500"
+											: "bg-white border-gray-300 focus:border-blue-500"
+									} focus:outline-none focus:ring-1 focus:ring-blue-500`}
+								/>
+							</div>
+
+							<div className="flex justify-end space-x-3 pt-2">
+								<button
+									type="button"
+									onClick={() => setIsModalOpen(false)}
+									className={`px-4 py-2 rounded ${
+										darkMode
+											? "bg-gray-700 hover:bg-gray-600"
+											: "bg-gray-200 hover:bg-gray-300"
+									}`}>
+									Cancel
+								</button>
+								<button
+									type="submit"
+									className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+									Log Incident
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 };
