@@ -1,4 +1,5 @@
-import { useState } from "react";
+// src/components/tasks/PriorityTasks.jsx
+import { useState, useEffect } from "react";
 import { useTheme } from "../../contexts/ThemeContext";
 import { FaPlus } from "react-icons/fa";
 import AddTaskModal from "../modals/task/AddTaskModal";
@@ -6,49 +7,22 @@ import AddTaskModal from "../modals/task/AddTaskModal";
 const PriorityTasks = () => {
 	const { darkMode } = useTheme();
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [tasks, setTasks] = useState([
-		{
-			id: 1,
-			title: "Finalize Q2 Financial Report",
-			priority: "high",
-			due: "07 March 2025, 09:00 AM",
-			completed: false,
-		},
-		{
-			id: 4,
-			title: "Update Security Protocols",
-			priority: "high",
-			due: "07 March 2025, 15:00 PM",
-			completed: false,
-		},
-		{
-			id: 5,
-			title: "Finalize Q2 Financial Report",
-			priority: "high",
-			due: "07 March 2025, 09:00 AM",
-			completed: false,
-		},
-		{
-			id: 6,
-			title: "Review Vendor Contracts",
-			priority: "medium",
-			due: "07 March 2025, 11:00 AM",
-			completed: false,
-		},
-	]);
+	const [tasks, setTasks] = useState([]);
 
-	// const getPriorityColor = (priority) => {
-	// 	switch (priority) {
-	// 		case "high":
-	// 			return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
-	// 		case "medium":
-	// 			return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
-	// 		case "low":
-	// 			return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
-	// 		default:
-	// 			return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
-	// 	}
-	// };
+	// Retrieve tasks from localStorage when component mounts
+	useEffect(() => {
+		const storedTasks = JSON.parse(localStorage.getItem("tasks"));
+		if (storedTasks) {
+			setTasks(storedTasks);
+		}
+	}, []);
+
+	// Save tasks to localStorage whenever tasks state changes
+	useEffect(() => {
+		if (tasks.length > 0) {
+			localStorage.setItem("tasks", JSON.stringify(tasks));
+		}
+	}, [tasks]);
 
 	const handleAddTask = (newTask) => {
 		const formattedTask = {
@@ -63,7 +37,7 @@ const PriorityTasks = () => {
 				  }).format(new Date(newTask.due))
 				: "No deadline set",
 		};
-		setTasks([...tasks, formattedTask]);
+		setTasks((prevTasks) => [...prevTasks, formattedTask]);
 	};
 
 	return (
@@ -107,12 +81,6 @@ const PriorityTasks = () => {
 										{task.title}
 									</p>
 									<div className="flex items-center mt-1 space-x-2">
-										{/* <span
-											className={`px-2 py-1 text-xs rounded-md ${getPriorityColor(
-												task.priority
-											)}`}>
-											{task.priority}
-										</span> */}
 										<span className="text-xs text-gray-500 dark:text-gray-400 truncate">
 											{task.due}
 										</span>

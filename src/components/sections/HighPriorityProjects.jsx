@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTheme } from "../../contexts/ThemeContext";
 import { FaPlus } from "react-icons/fa";
 import AddProjectModal from "../modals/project/AddProjectModal";
@@ -6,29 +6,16 @@ import AddProjectModal from "../modals/project/AddProjectModal";
 const HighPriorityProjects = () => {
 	const { darkMode } = useTheme();
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [projects, setProjects] = useState([
-		{
-			name: "UPS Upgrade",
-			startdate: "Feb 15, 2025",
-			duedate: "March 27, 2025",
-			status: "overdue",
-			responsible: "Waliko Simwaka",
-		},
-		{
-			name: "Server Migration",
-			startdate: "March 1, 2025",
-			duedate: "April 15, 2025",
-			status: "on track",
-			responsible: "Chisomo Banda",
-		},
-		{
-			name: "Network Optimization",
-			startdate: "March 10, 2025",
-			duedate: "May 10, 2025",
-			status: "on track",
-			responsible: "Tadala Tembo",
-		},
-	]);
+	const [projects, setProjects] = useState([]);
+
+	useEffect(() => {
+		const savedProjects = JSON.parse(localStorage.getItem("projects")) || [];
+		setProjects(savedProjects);
+	}, []);
+
+	useEffect(() => {
+		localStorage.setItem("projects", JSON.stringify(projects));
+	}, [projects]);
 
 	const getStatusStyle = (status) => {
 		switch (status) {
@@ -67,7 +54,7 @@ const HighPriorityProjects = () => {
 				day: "numeric",
 			}).format(new Date(newProject.duedate)),
 		};
-		setProjects([...projects, formattedProject]);
+		setProjects((prevProjects) => [...prevProjects, formattedProject]);
 	};
 
 	return (
@@ -135,7 +122,7 @@ const HighPriorityProjects = () => {
 								return (
 									<tr
 										key={index}
-										className="hover:bg-gray-50 dark:hover:bg-gray-800">
+										className="hover:bg-gray-50 dark:hover:bg-gray-20">
 										<td className="px-2 py-1 md:px-4 md:py-3 whitespace-nowrap text-xs md:text-sm font-medium truncate">
 											{project.name}
 										</td>

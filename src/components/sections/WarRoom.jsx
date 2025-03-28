@@ -1,21 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTheme } from "../../contexts/ThemeContext";
 import { FaPlus, FaEllipsisV, FaUserCircle, FaTimes } from "react-icons/fa";
 
 const WarRoom = () => {
 	const { darkMode } = useTheme();
-	const [tasks, setTasks] = useState([
-		{
-			id: 1,
-			title: "Production Server Outage - Database Failure",
-			description:
-				"Critical database failure causing complete service disruption. Investigate, restore, and implement failover.",
-			status: "Overdue",
-			dueDate: "27 March, 2025 17:00",
-			priority: "Critical",
-			assignees: ["Alice Banda"],
-		},
-	]);
+	const [tasks, setTasks] = useState([]);
 
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [newIncident, setNewIncident] = useState({
@@ -25,6 +14,21 @@ const WarRoom = () => {
 		assignees: "",
 		dueDate: "",
 	});
+	const [loading, setLoading] = useState(false);
+
+	useEffect(() => {
+		// Close modal on Escape key press
+		const handleEscape = (e) => {
+			if (e.key === "Escape") {
+				setIsModalOpen(false);
+			}
+		};
+		document.addEventListener("keydown", handleEscape);
+
+		return () => {
+			document.removeEventListener("keydown", handleEscape);
+		};
+	}, []);
 
 	const getPriorityColor = (priority) => {
 		switch (priority) {
@@ -46,6 +50,11 @@ const WarRoom = () => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
+		if (!newIncident.title || !newIncident.description) {
+			alert("Please fill all required fields!");
+			return;
+		}
+		setLoading(true);
 		const newTask = {
 			id: tasks.length + 1,
 			title: newIncident.title,
@@ -57,7 +66,7 @@ const WarRoom = () => {
 				? [newIncident.assignees]
 				: ["Unassigned"],
 		};
-		setTasks([...tasks, newTask]);
+		setTasks((prevTasks) => [...prevTasks, newTask]);
 		setNewIncident({
 			title: "",
 			description: "",
@@ -66,6 +75,7 @@ const WarRoom = () => {
 			dueDate: "",
 		});
 		setIsModalOpen(false);
+		setLoading(false);
 	};
 
 	return (
@@ -284,8 +294,9 @@ const WarRoom = () => {
 								</button>
 								<button
 									type="submit"
+									disabled={loading}
 									className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-									Log Incident
+									{loading ? "Logging..." : "Log Incident"}
 								</button>
 							</div>
 						</form>
