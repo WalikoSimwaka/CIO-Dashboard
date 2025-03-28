@@ -1,0 +1,38 @@
+/* src/index.css or your main CSS file */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+	margin: 0;
+	padding: 0;
+	height: 100vh;
+	width: 100vw;
+	font-family: "Aptos", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+@layer base {
+	body.dark {
+		@apply bg-[#000000] text-white;
+	}
+	body {
+		@apply bg-[#EFEFF3] text-black;
+	}
+}
+
+/* If you want to ensure Aptos is used when available */
+@font-face {
+	font-family: "Aptos";
+	font-style: normal;
+	font-weight: 400;
+	src: local("Aptos"), local("Aptos Normal");
+}
+
+@font-face {
+	font-family: "Aptos";
+	font-style: bold;
+	font-weight: 700;
+	src: local("Aptos Bold"), local("Aptos-Bold");
+}
