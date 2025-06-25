@@ -230,7 +230,7 @@
 				const fetchTasks = async () => {
 					try {
 						const response = await fetch(
-							"http://localhost:5000/api/priority-tasks"
+							"http://cio-dashboard-backend-production.up.railway.app/api/priority-tasks"
 						);
 						if (!response.ok) throw new Error("Failed to fetch tasks");
 						const data = await response.json();
@@ -250,7 +250,7 @@
 					e.preventDefault();
 					try {
 						const response = await fetch(
-							"http://localhost:5000/api/priority-tasks",
+							"http://cio-dashboard-backend-production.up.railway.app/api/priority-tasks",
 							{
 								method: "POST",
 								headers: {
@@ -279,7 +279,7 @@
 					e.preventDefault();
 					try {
 						const response = await fetch(
-							`http://localhost:5000/api/priority-tasks/${currentTask._id}`,
+							`http://cio-dashboard-backend-production.up.railway.app/api/priority-tasks/${currentTask._id}`,
 							{
 								method: "PUT",
 								headers: {
@@ -305,7 +305,7 @@
 				const handleRemoveTask = async (id) => {
 					try {
 						const response = await fetch(
-							`http://localhost:5000/api/priority-tasks/${id}`,
+							`http://cio-dashboard-backend-production.up.railway.app/api/priority-tasks/${id}`,
 							{
 								method: "DELETE",
 							}
@@ -337,7 +337,7 @@
 					try {
 						const updatedTask = { ...task, completed: !task.completed };
 						const response = await fetch(
-							`http://localhost:5000/api/priority-tasks/${task._id}`,
+							`http://cio-dashboard-backend-production.up.railway.app/api/priority-tasks/${task._id}`,
 							{
 								method: "PUT",
 								headers: {
@@ -727,7 +727,7 @@
 				const fetchProjects = async () => {
 					try {
 						const response = await fetch(
-							"http://localhost:5000/api/high-priority-projects"
+							"http://cio-dashboard-backend-production.up.railway.app/api/high-priority-projects"
 						);
 						if (!response.ok) throw new Error("Failed to fetch projects");
 						const data = await response.json();
@@ -747,7 +747,7 @@
 					e.preventDefault();
 					try {
 						const response = await fetch(
-							"http://localhost:5000/api/high-priority-projects",
+							"http://cio-dashboard-backend-production.up.railway.app/api/high-priority-projects",
 							{
 								method: "POST",
 								headers: {
@@ -777,7 +777,7 @@
 					e.preventDefault();
 					try {
 						const response = await fetch(
-							`http://localhost:5000/api/high-priority-projects/${currentProject._id}`,
+							`http://cio-dashboard-backend-production.up.railway.app/api/high-priority-projects/${currentProject._id}`,
 							{
 								method: "PUT",
 								headers: {
@@ -803,7 +803,7 @@
 				const handleRemoveProject = async (id) => {
 					try {
 						const response = await fetch(
-							`http://localhost:5000/api/high-priority-projects/${id}`,
+							`http://cio-dashboard-backend-production.up.railway.app/api/high-priority-projects/${id}`,
 							{
 								method: "DELETE",
 							}
@@ -1304,7 +1304,9 @@
 
 				const fetchIncidents = async () => {
 					try {
-						const response = await fetch("http://localhost:5000/api/war-room");
+						const response = await fetch(
+							"http://cio-dashboard-backend-production.up.railway.app/api/war-room"
+						);
 						if (!response.ok) throw new Error("Failed to fetch incidents");
 						const data = await response.json();
 						setIncidents(data);
@@ -1372,19 +1374,22 @@
 				const handleSubmit = async (e) => {
 					e.preventDefault();
 					try {
-						const response = await fetch("http://localhost:5000/api/war-room", {
-							method: "POST",
-							headers: {
-								"Content-Type": "application/json",
-							},
-							body: JSON.stringify({
-								...newIncident,
-								status: "New",
-								assignees: newIncident.assignees
-									? [newIncident.assignees]
-									: ["Unassigned"],
-							}),
-						});
+						const response = await fetch(
+							"http://cio-dashboard-backend-production.up.railway.app/api/war-room",
+							{
+								method: "POST",
+								headers: {
+									"Content-Type": "application/json",
+								},
+								body: JSON.stringify({
+									...newIncident,
+									status: "New",
+									assignees: newIncident.assignees
+										? [newIncident.assignees]
+										: ["Unassigned"],
+								}),
+							}
+						);
 
 						if (!response.ok) throw new Error("Failed to add incident");
 						const addedIncident = await response.json();
@@ -1406,7 +1411,7 @@
 					e.preventDefault();
 					try {
 						const response = await fetch(
-							`http://localhost:5000/api/war-room/${currentIncident._id}`,
+							`http://cio-dashboard-backend-production.up.railway.app/api/war-room/${currentIncident._id}`,
 							{
 								method: "PUT",
 								headers: {
@@ -1434,7 +1439,7 @@
 				const handleRemoveIncident = async (id) => {
 					try {
 						const response = await fetch(
-							`http://localhost:5000/api/war-room/${id}`,
+							`http://cio-dashboard-backend-production.up.railway.app/api/war-room/${id}`,
 							{
 								method: "DELETE",
 							}
